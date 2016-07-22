@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<div id="player" class="youtube-player" type="text/html" frameborder="0" allowfullscreen
+     style="position:absolute; border:0; top:0; bottom:0; left:0; right:0; width:100%; height:100%;" enablejsapi="1">
+</div>
+
+<script>
+      var tag = document.createElement('script');
+
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      var player;
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+             playerVars: {
+             'showinfo': 0,
+             'controls':0,
+             'cc_load_policy': 1,
+             'iv_load_policy': 3,
+           },
+          videoId: '%YOUTUBE_VIDEO%',
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+          }
+        });
+      }
+
+      function onPlayerReady(event) {
+        player.setPlaybackQuality('medium');
+      }
+
+
+      function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.PLAYING) {
+            Android.showController();
+        }
+      }
+
+      function stopVideo() {
+        player.stopVideo();
+      }
+
+      function playVideo() {
+        player.playVideo();
+      }
+
+      function pauseVideo() {
+        player.pauseVideo();
+      }
+
+
+
+    </script>
+
+</body>
+</html>
