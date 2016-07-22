@@ -1,4 +1,4 @@
-package com.snipclip.tc.snipclip.pojo;
+package com.snipclip.pojo;
 
 import java.util.ArrayList;
 
@@ -6,12 +6,12 @@ import java.util.ArrayList;
  * Created by tc on 7/23/16.
  */
 
-public class VideoData {
+public class VideoDataPojo {
 
     String videoType;
     ArrayList<String> urls;
 
-    public VideoData(String videoType, ArrayList<String> urls) {
+    public VideoDataPojo(String videoType, ArrayList<String> urls) {
         this.videoType = videoType;
         this.urls = urls;
     }
