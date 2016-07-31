@@ -8,8 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.snipclip.R;
+import com.snipclip.interfaces.StopVideoInterface;
 import com.snipclip.pojo.VideoDataPojo;
 
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     private Context mContext;
     ArrayList<VideoDataPojo> videoDataPojoArrayList;
+    RecyclerViewAdapter recyclerViewAdapter;
 
     public ViewPagerAdapter(Context context, ArrayList<VideoDataPojo> videoDataPojoArrayList) {
         mContext = context;
@@ -39,7 +42,7 @@ public class ViewPagerAdapter extends PagerAdapter {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(mContext);
         recyclerView.setLayoutManager(mLayoutManager);
 
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(videoDataPojoArrayList.get(position).getUrls(), mContext);
+        recyclerViewAdapter = new RecyclerViewAdapter(videoDataPojoArrayList.get(position).getUrls(), mContext);
         recyclerView.setAdapter(recyclerViewAdapter);
 
         TextView textView= (TextView) layout.findViewById(R.id.textViewViewPagerId);
@@ -58,6 +61,7 @@ public class ViewPagerAdapter extends PagerAdapter {
         return videoDataPojoArrayList.size();
     }
 
+
     @Override
     public boolean isViewFromObject(View view, Object object) {
         return view == object;
@@ -65,7 +69,13 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
+        Toast.makeText(mContext,"getPageTitle : "+String.valueOf(position),Toast.LENGTH_SHORT).show();
         return videoDataPojoArrayList.get(position).getVideoType();
+    }
+
+    public void stopAllVideos(){
+        StopVideoInterface stopVideoInterface=recyclerViewAdapter.stopVideoInterface;
+        stopVideoInterface.stopVideo();
     }
 
 }

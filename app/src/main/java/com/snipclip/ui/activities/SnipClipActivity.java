@@ -16,16 +16,33 @@ public class SnipClipActivity extends AppCompatActivity {
     ArrayList<VideoDataPojo> videoDataPojoArrayList;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         videoDataPojoArrayList =new ArrayList<>();
         setVideoDataArrayList();
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setOffscreenPageLimit(videoDataPojoArrayList.size());
-        viewPager.setAdapter(new ViewPagerAdapter(this, videoDataPojoArrayList));
+        final ViewPagerAdapter viewPagerAdapter=new ViewPagerAdapter(this, videoDataPojoArrayList);
+        viewPager.setAdapter(viewPagerAdapter);
+
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                viewPagerAdapter.stopAllVideos();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+
 
     }
 
@@ -35,8 +52,8 @@ public class SnipClipActivity extends AppCompatActivity {
         urlArrayList.add("GC9vW-BCp20");
         urlArrayList.add("E-fzJnpf-T4");
         urlArrayList.add("1J9Z0qhKZqo");
-        urlArrayList.add("9OXFk-pdi6c");
         urlArrayList.add("KNNvi2hp1xM");
+        urlArrayList.add("9OXFk-pdi6c");
         videoDataPojoArrayList.add(new VideoDataPojo("Entertainment",urlArrayList));
 
 

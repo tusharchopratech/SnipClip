@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 
 
 import com.snipclip.R;
+import com.snipclip.interfaces.StopVideoInterface;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -27,6 +28,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     View view;
     ArrayList<String> urls;
     int flag=1;
+
+    static WebView webView;
+    static LinearLayout linearLayout;
+    public StopVideoInterface stopVideoInterface;
 
     RecyclerViewAdapter(ArrayList<String> urls , Context context)
     {
@@ -50,11 +55,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             linearLayout= (LinearLayout) itemView.findViewById(R.id.linearLayoutId);
         }
     }
+
     @Override
     public void onBindViewHolder(final VideoHolder videoHolder, final int i) {
 
         videoHolder.webView.getSettings().setJavaScriptEnabled(true);
-        videoHolder.webView.addJavascriptInterface(new WebAppInterface(context,videoHolder.linearLayout), "Android");
+        videoHolder.webView.addJavascriptInterface(new WebAppInterface(context,videoHolder.linearLayout,videoHolder.webView), "Android");
         videoHolder.webView.setWebViewClient(new WebViewClient() {
             public boolean shouldOverrideUrlLoading(WebView view, String url){
                 return false;
@@ -73,16 +79,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 if (flag == 1) {
                     videoHolder.webView.loadUrl("javascript:pauseVideo()");
                     videoHolder.buttonPause.setText("Resume");
+                    flag = 0;
                 } else {
                     videoHolder.webView.loadUrl("javascript:playVideo()");
                     videoHolder.buttonPause.setText("Pause");
-                }
-
-                if (flag == 1) {
-                    flag = 0;
-                } else {
                     flag = 1;
                 }
+
             }
 
         });
@@ -94,6 +97,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 videoHolder.linearLayout.setVisibility(View.GONE);
             }
         });
+
+        stopVideoInterface = new StopVideoInterface() {
+            @Override
+            public void stopVideo() {
+                webView.loadUrl("javascript:stopVideo()");
+                linearLayout.setVisibility(View.GONE);
+            }
+        };
 
     }
 
@@ -133,10 +144,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
      public class WebAppInterface {
 
         Context mContext;
-        LinearLayout linearLayout;
-        WebAppInterface(Context c,LinearLayout linearLayout) {
+        LinearLayout ll;
+         WebView wb;
+        WebAppInterface(Context c,LinearLayout ll,WebView wb) {
             mContext = c;
-            this.linearLayout=linearLayout;
+            this.ll=ll;
+            this.wb=wb;
         }
 
         @JavascriptInterface
@@ -144,11 +157,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             ((Activity)context).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    linearLayout.setVisibility(View.VISIBLE);
+                    if(webView!=null && linearLayout!=null){
+                        webView.loadUrl("javascript:stopVideo()");
+                        linearLayout.setVisibility(View.GONE);
+                    }
+                    webView=wb;
+                    linearLayout=ll;
+                    ll.setVisibility(View.VISIBLE);
                 }
             });
         }
     }
+
 
 }
 
